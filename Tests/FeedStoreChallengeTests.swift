@@ -105,7 +105,9 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	
 	private func makeSUT() -> FeedStore {
         let db = SQLiteDatabaseFactory.create()!
-        return SQLiteFeedStore(db: db)
+        let feedStore = SQLiteFeedStore(db: db)
+        trackForMemoryLeak(feedStore)
+        return feedStore
 	}
     
     private var dbPath: String {
