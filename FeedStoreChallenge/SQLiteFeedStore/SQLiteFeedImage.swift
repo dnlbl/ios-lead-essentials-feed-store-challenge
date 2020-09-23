@@ -16,11 +16,11 @@ internal struct SQLiteColumnWrap<T> {
 
 internal struct SQLiteFeedImage {
     
-    let id: SQLiteColumnWrap<String>
-    let description: SQLiteColumnWrap<String?>
-    let location: SQLiteColumnWrap<String?>
-    let url: SQLiteColumnWrap<String>
-    let timestamp: SQLiteColumnWrap<TimeInterval>
+    internal let id: SQLiteColumnWrap<String>
+    internal let description: SQLiteColumnWrap<String?>
+    internal let location: SQLiteColumnWrap<String?>
+    internal let url: SQLiteColumnWrap<String>
+    internal let timestamp: SQLiteColumnWrap<TimeInterval>
     
     internal init(from row: Row) {
         let id = row[SQLiteFeedImage.C_ID]
