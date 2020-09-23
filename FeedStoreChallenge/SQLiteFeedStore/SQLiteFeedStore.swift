@@ -9,6 +9,18 @@
 import Foundation
 import SQLite
 
+public struct SQLiteDatabaseFactory {
+    
+    private static let dbFolderName = "SQLiteFeedStore"
+    
+    public static func create() -> Connection? {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
+        let dbPath = "\(documentsPath)/\(dbFolderName)"
+        return try? Connection(dbPath, readonly: false)
+    }
+    
+}
+
 final public class SQLiteFeedStore: FeedStore {
     
     private let db: Connection
@@ -19,10 +31,8 @@ final public class SQLiteFeedStore: FeedStore {
     private let url = Expression<String>("url")
     private let timestampColumn = Expression<TimeInterval>("timestamp")
 
-    public init() {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        let dbPath = "\(documentsPath)/SQLiteFeedStore"
-        self.db = try! Connection(dbPath, readonly: false)
+    public init(db: Connection) {
+        self.db = db
         prepareTables()
     }
 

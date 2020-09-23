@@ -104,7 +104,8 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-		SQLiteFeedStore()
+        let db = SQLiteDatabaseFactory.create()!
+        return SQLiteFeedStore(db: db)
 	}
     
     private var dbPath: String {
