@@ -7,29 +7,46 @@
 //
 
 import Foundation
+import SQLite
 
-struct SQLiteFeedImage: Encodable {
+struct SQLiteColumnWrap<T> {
+    let value: T
+    let column: Expression<T>
+}
 
-    let id: String
-    let description: String?
-    let location: String?
-    let url: String
+struct SQLiteFeedImage {
+
+    let id: SQLiteColumnWrap<String>
+    let description: SQLiteColumnWrap<String?>
+    let location: SQLiteColumnWrap<String?>
+    let url: SQLiteColumnWrap<String>
     
     internal init(id: String, description: String?, location: String?, url: String) {
-        self.id = id
-        self.description = description
-        self.location = location
-        self.url = url
+        self.id = SQLiteColumnWrap(value: id, column: .init("id"))
+        self.description = SQLiteColumnWrap(value: description, column: .init("description"))
+        self.location = SQLiteColumnWrap(value: location, column: .init("location"))
+        self.url = SQLiteColumnWrap(value: url, column: .init("url"))
     }
     
     init(fromLocal local: LocalFeedImage) {
-        self.id = local.id.uuidString
-        self.description = local.description
-        self.location = local.location
-        self.url = local.url.absoluteString
+        let id = local.id.uuidString
+        let description = local.description
+        let location = local.location
+        let url = local.url.absoluteString
+        
+        self = .init(id: id, description: description, location: location, url: url)
     }
     
     var toLocal: LocalFeedImage {
-        .init(id: UUID(uuidString: id)!, description: description, location: location, url: URL(string: url)!)
+        let id = UUID(uuidString: self.id.value)!
+        let description = self.description.value
+        let location = self.location.value
+        let url =  URL(string: self.url.value)!
+        
+        return LocalFeedImage(id: id,
+                              description: description,
+                              location: location,
+                              url: url)
     }
+    
 }

@@ -74,11 +74,11 @@ final public class SQLiteFeedStore: FeedStore {
 
         sqliteFeed.forEach {
             try! db.run(feedTable.insert(
-                id <- $0.id,
-                description <- $0.description,
-                location <- $0.location,
-                url <- $0.url,
-                timestampColumn <- timestamp.timeIntervalSince1970)
+                            $0.id.column <- $0.id.value,
+                            $0.description.column <- $0.description.value,
+                            $0.location.column <- $0.location.value,
+                            $0.url.column <- $0.url.value,
+                            timestampColumn <- timestamp.timeIntervalSince1970)
             )
         }
         
