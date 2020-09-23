@@ -74,6 +74,18 @@ final public class SQLiteFeedStore: FeedStore {
     }
 
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
+        deleteCachedFeed { _ in
+            self.performInsert(feed, timestamp: timestamp, completion: completion)
+        }
+    }
+    
+    public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
+        try! db.run(feedTable.delete())
+        completion(nil)
+    }
+    
+    
+    private func performInsert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
         let sqliteFeed = feed.map(SQLiteFeedImage.init)
 
         sqliteFeed.forEach {
@@ -85,13 +97,9 @@ final public class SQLiteFeedStore: FeedStore {
                 timestampColumn <- timestamp.timeIntervalSince1970)
             )
         }
+        
         completion(nil)
     }
-    
-    public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        
-    }
-    
 }
 
 private extension SQLiteFeedStore {
