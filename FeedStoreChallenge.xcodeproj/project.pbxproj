@@ -91,7 +91,7 @@
 		08CE2B8D2285BBD100183A1B /* FeedStoreChallenge */ = {
 			isa = PBXGroup;
 			children = (
-				B75F1C6A251B5A4400D547A2 /* New Group */,
+				B75F1C6A251B5A4400D547A2 /* SQLiteFeedStore */,
 				08CE2BA72285BCC600183A1B /* LocalFeedImage.swift */,
 				08CE2BA52285BCB600183A1B /* FeedStore.swift */,
 				08CE2B8F2285BBD100183A1B /* Info.plist */,
@@ -123,12 +123,12 @@
 			path = FeedStoreSpecs;
 			sourceTree = "<group>";
 		};
-		B75F1C6A251B5A4400D547A2 /* New Group */ = {
+		B75F1C6A251B5A4400D547A2 /* SQLiteFeedStore */ = {
 			isa = PBXGroup;
 			children = (
 				B75F1C6B251B5A5000D547A2 /* SQLiteFeedStore.swift */,
 			);
-			path = "New Group";
+			path = SQLiteFeedStore;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -6,6 +6,16 @@ import XCTest
 import FeedStoreChallenge
 
 class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
+    
+    override func setUp() {
+        super.setUp()
+        try? FileManager.default.removeItem(atPath: dbPath)
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        try? FileManager.default.removeItem(atPath: dbPath)
+    }
 	
     //  ***********************
     //
@@ -32,9 +42,9 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	}
 
 	func test_retrieve_deliversFoundValuesOnNonEmptyCache() {
-//		let sut = makeSUT()
-//
-//		assertThatRetrieveDeliversFoundValuesOnNonEmptyCache(on: sut)
+		let sut = makeSUT()
+
+		assertThatRetrieveDeliversFoundValuesOnNonEmptyCache(on: sut)
 	}
 
 	func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
@@ -96,6 +106,12 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	private func makeSUT() -> FeedStore {
 		SQLiteFeedStore()
 	}
+    
+    private var dbPath: String {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        let dbPath = "\(documentsPath)/SQLiteFeedStore"
+        return dbPath
+    }
 	
 }
 
