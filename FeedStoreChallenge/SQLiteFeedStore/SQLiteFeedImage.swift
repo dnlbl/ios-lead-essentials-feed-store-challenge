@@ -22,10 +22,10 @@ struct SQLiteFeedImage {
     let url: SQLiteColumnWrap<String>
     
     internal init(id: String, description: String?, location: String?, url: String) {
-        self.id = SQLiteColumnWrap(value: id, column: .init("id"))
-        self.description = SQLiteColumnWrap(value: description, column: .init("description"))
-        self.location = SQLiteColumnWrap(value: location, column: .init("location"))
-        self.url = SQLiteColumnWrap(value: url, column: .init("url"))
+        self.id = SQLiteColumnWrap(value: id, column: SQLiteFeedImage.C_ID)
+        self.description = SQLiteColumnWrap(value: description, column: SQLiteFeedImage.C_DESCRIPTION)
+        self.location = SQLiteColumnWrap(value: location, column: SQLiteFeedImage.C_LOCATION)
+        self.url = SQLiteColumnWrap(value: url, column: SQLiteFeedImage.C_URL)
     }
     
     init(fromLocal local: LocalFeedImage) {
@@ -41,12 +41,22 @@ struct SQLiteFeedImage {
         let id = UUID(uuidString: self.id.value)!
         let description = self.description.value
         let location = self.location.value
-        let url =  URL(string: self.url.value)!
+        let url = URL(string: self.url.value)!
         
         return LocalFeedImage(id: id,
                               description: description,
                               location: location,
                               url: url)
     }
+    
+}
+
+//MARK: - Columns
+extension SQLiteFeedImage {
+    
+    static let C_ID = Expression<String>("id")
+    static let C_DESCRIPTION = Expression<String?>("description")
+    static let C_LOCATION = Expression<String?>("location")
+    static let C_URL = Expression<String>("url")
     
 }
