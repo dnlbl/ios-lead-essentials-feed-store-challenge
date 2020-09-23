@@ -104,30 +104,18 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	// - MARK: Helpers
 	
 	private func makeSUT() -> FeedStore {
-        let db = SQLiteDatabaseFactory.create()!
+        let db = SQLiteDatabaseFactory.create(dbPath: dbPath)!
         let feedStore = SQLiteFeedStore(db: db)
         trackForMemoryLeak(feedStore)
         return feedStore
 	}
     
+    private var cachesPath: String {
+        NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first!
+    }
+    
     private var dbPath: String {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        let dbPath = "\(documentsPath)/SQLiteFeedStore"
-        return dbPath
+        cachesPath.appending("SQLiteFeedStore.db")
     }
-    
-}
-
-import SQLite
-
-fileprivate struct SQLiteDatabaseFactory {
-    
-    private static let dbFolderName = "SQLiteFeedStore"
-    
-    static func create() -> Connection? {
-        let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        let dbPath = "\(documentsPath)/\(dbFolderName)"
-        return try? Connection(dbPath, readonly: false)
-    }
-    
+        
 }
