@@ -48,4 +48,13 @@ Your custom persistence infrastructure implementation can be backed by any persi
 
 9) Aim **not** to block the main thread - run expensive operations in a background queue.
 
-Happy coding!
+10) Strive to produce a clean solution as it can be **an ideal addition to your portfolio**!
+
+ Finally, add to this README file:
+
+ ### Comments and remarks you think other developers will find useful.
+
+ ----
+
+ ### The Dependency Diagram demonstrating the architecture of your solution. 
+![ArchitectureDiagram](FeedStore-Dependency-Diagram.png)
