@@ -76,8 +76,10 @@ class FeedStoreIntegrationTests: XCTestCase {
     // - MARK: Helpers
     
     private func makeSUT() -> FeedStore {
-        let db = SQLiteDatabaseFactory.create(dbPath: dbPath)!
-        let feedStore = SQLiteFeedStore(db: db)
+        let connection = SQLiteDatabaseFactory.create(dbPath: dbPath)!
+        
+        let feedStore = SQLiteFeedStore(connection: connection)
+        
         trackForMemoryLeak(feedStore)
         return feedStore
     }

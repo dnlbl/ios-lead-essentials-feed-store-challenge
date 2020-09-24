@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import FeedStoreChallenge
 import SQLite
 
 internal struct SQLiteDatabaseFactory {
         
-    static func create(dbPath: String) -> Connection? {
+    static func create(dbPath: String) -> SQLite.Connection? {
         return try? Connection(dbPath, readonly: false)
     }
     

@@ -24,6 +24,7 @@
 		B75F1C6C251B5A5000D547A2 /* SQLiteFeedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75F1C6B251B5A5000D547A2 /* SQLiteFeedStore.swift */; };
 		B76122A0251B7C63000AC314 /* SQLiteFeedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B761229F251B7C63000AC314 /* SQLiteFeedImage.swift */; };
 		B79B91DF251BA4F6004A0431 /* SQLiteFeedImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79B91DE251BA4F6004A0431 /* SQLiteFeedImageHelper.swift */; };
+		B7CA974C251C74DC002D4E0B /* SQLiteConnectionDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CA974B251C74DC002D4E0B /* SQLiteConnectionDecorator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		B75F1C6B251B5A5000D547A2 /* SQLiteFeedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteFeedStore.swift; sourceTree = "<group>"; };
 		B761229F251B7C63000AC314 /* SQLiteFeedImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteFeedImage.swift; sourceTree = "<group>"; };
 		B79B91DE251BA4F6004A0431 /* SQLiteFeedImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteFeedImageHelper.swift; sourceTree = "<group>"; };
+		B7CA974B251C74DC002D4E0B /* SQLiteConnectionDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteConnectionDecorator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				084BB13D24FE56830091C705 /* XCTestCase+FeedStoreHelpers.swift */,
 				B75B8E11251BC81700277FED /* XCTestCase+Tracking.swift */,
 				B75B8E15251BC98800277FED /* SQLiteDatabaseFactory.swift */,
+				B7CA974B251C74DC002D4E0B /* SQLiteConnectionDecorator.swift */,
 			);
 			path = FeedStoreSpecs;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				B75B8E12251BC81700277FED /* XCTestCase+Tracking.swift in Sources */,
 				084BB13E24FE56830091C705 /* XCTestCase+FeedStoreHelpers.swift in Sources */,
 				08CE2BB52285BEF100183A1B /* FeedStoreChallengeTests.swift in Sources */,
+				B7CA974C251C74DC002D4E0B /* SQLiteConnectionDecorator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

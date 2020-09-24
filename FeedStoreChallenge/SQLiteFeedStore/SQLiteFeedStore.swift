@@ -9,14 +9,23 @@
 import Foundation
 import SQLite
 
+public protocol SQLiteConnectionProtocol {
+    @discardableResult func run(_ statement: String, _ bindings: Binding?...) throws -> Statement
+    @discardableResult func run(_ query: Delete) throws -> Int
+    @discardableResult func run(_ query: Insert) throws -> Int64
+    func prepare(_ query: QueryType) throws -> AnySequence<Row>
+}
+
+extension SQLite.Connection: SQLiteConnectionProtocol {}
+
 final public class SQLiteFeedStore: FeedStore {
     
-    private let db: Connection
+    private let connection: SQLiteConnectionProtocol
     private let feedTable: Table
     private let workingQueue: DispatchQueue
     
-    public init(db: Connection) {
-        self.db = db
+    public init(connection: SQLiteConnectionProtocol) {
+        self.connection = connection
         self.feedTable = Table("feed")
         self.workingQueue = DispatchQueue(
             label: "SQLiteFeedStore",
@@ -25,7 +34,7 @@ final public class SQLiteFeedStore: FeedStore {
     }
     
     private func prepareTables() {
-        _ = try? db.run(feedTable.create(block: SQLiteFeedImageHelper.prepareTable))
+        _ = try? connection.run(feedTable.create(block: SQLiteFeedImageHelper.prepareTable))
     }
 
     public func retrieve(completion: @escaping RetrievalCompletion) {
@@ -40,7 +49,7 @@ final public class SQLiteFeedStore: FeedStore {
             guard let self = self else { return }
             
             do {
-                try self.db.run(self.feedTable.delete())
+                try self.connection.run(self.feedTable.delete())
                 self.performInsert(feed, timestamp: timestamp, completion: completion)
             } catch {
                 completion(error)
@@ -53,7 +62,7 @@ final public class SQLiteFeedStore: FeedStore {
             guard let self = self else { return }
             
             do {
-                try self.db.run(self.feedTable.delete())
+                try self.connection.run(self.feedTable.delete())
                 completion(nil)
             } catch {
                 completion(error)
@@ -64,7 +73,7 @@ final public class SQLiteFeedStore: FeedStore {
     private func performRetrieve() -> RetrieveCachedFeedResult {
         do {
             var retrieved = [SQLiteFeedImage]()
-            for row in try self.db.prepare(self.feedTable) {
+            for row in try connection.prepare(self.feedTable) {
                 retrieved.append(SQLiteFeedImage(from: row))
             }
             
@@ -85,7 +94,7 @@ final public class SQLiteFeedStore: FeedStore {
         
         do {
             try sqliteFeed.forEach {
-                try db.run(
+                try connection.run(
                     SQLiteFeedImageHelper.insert(model: $0, into: feedTable)
                 )
             }

@@ -4,6 +4,7 @@
 
 import XCTest
 import FeedStoreChallenge
+import SQLite
 
 class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
     
@@ -103,9 +104,13 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 	
 	// - MARK: Helpers
 	
-	private func makeSUT() -> FeedStore {
-        let db = SQLiteDatabaseFactory.create(dbPath: dbPath)!
-        let feedStore = SQLiteFeedStore(db: db)
+    private func makeSUT(withExpectingError expectingError: FeedStoreOperationError? = nil) -> FeedStore {
+        let connection: SQLite.Connection = SQLiteDatabaseFactory.create(dbPath: dbPath)!
+         
+        let feedStore = SQLiteFeedStore(
+            connection: SQLiteConnectionDecorator(decoratee: connection, operationError: expectingError)
+        )
+        
         trackForMemoryLeak(feedStore)
         return feedStore
 	}
@@ -131,3 +136,51 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
     }
     
 }
+
+extension FeedStoreChallengeTests: FailableRetrieveFeedStoreSpecs {
+
+    func test_retrieve_deliversFailureOnRetrievalError() {
+        let sut = makeSUT(withExpectingError: .open)
+
+        assertThatRetrieveDeliversFailureOnRetrievalError(on: sut)
+    }
+
+    func test_retrieve_hasNoSideEffectsOnFailure() {
+//        let sut = makeSUT()
+//
+//        assertThatRetrieveHasNoSideEffectsOnFailure(on: sut)
+    }
+
+}
+
+//extension FeedStoreChallengeTests: FailableInsertFeedStoreSpecs {
+//
+//    func test_insert_deliversErrorOnInsertionError() {
+////        let sut = makeSUT()
+////
+////        assertThatInsertDeliversErrorOnInsertionError(on: sut)
+//    }
+//
+//    func test_insert_hasNoSideEffectsOnInsertionError() {
+////        let sut = makeSUT()
+////
+////        assertThatInsertHasNoSideEffectsOnInsertionError(on: sut)
+//    }
+//
+//}
+
+//extension FeedStoreChallengeTests: FailableDeleteFeedStoreSpecs {
+//
+//    func test_delete_deliversErrorOnDeletionError() {
+////        let sut = makeSUT()
+////
+////        assertThatDeleteDeliversErrorOnDeletionError(on: sut)
+//    }
+//
+//    func test_delete_hasNoSideEffectsOnDeletionError() {
+////        let sut = makeSUT()
+////
+////        assertThatDeleteHasNoSideEffectsOnDeletionError(on: sut)
+//    }
+//
+//}
