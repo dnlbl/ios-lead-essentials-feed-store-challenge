@@ -11,7 +11,9 @@ import FeedStoreChallenge
 import SQLite
 
 internal enum FeedStoreOperationError: Error {
-    case open
+    case read
+    case delete
+    case insert
 }
 
 internal class SQLiteConnectionDecorator: SQLiteConnectionProtocol {
@@ -25,28 +27,25 @@ internal class SQLiteConnectionDecorator: SQLiteConnectionProtocol {
     }
 
     func run(_ statement: String, _ bindings: Binding?...) throws -> Statement {
-        if let operationError = operationError {
-            throw operationError
-        }
         return try decoratee.run(statement, bindings)
     }
     
     func run(_ query: Delete) throws -> Int {
-        if let operationError = operationError {
+        if let operationError = operationError, operationError == .delete {
             throw operationError
         }
         return try decoratee.run(query)
     }
     
     func run(_ query: Insert) throws -> Int64 {
-        if let operationError = operationError {
+        if let operationError = operationError, operationError == .insert {
             throw operationError
         }
         return try decoratee.run(query)
     }
     
     func prepare(_ query: QueryType) throws -> AnySequence<Row> {
-        if let operationError = operationError {
+        if let operationError = operationError, operationError == .read {
             throw operationError
         }
         return try decoratee.prepare(query)

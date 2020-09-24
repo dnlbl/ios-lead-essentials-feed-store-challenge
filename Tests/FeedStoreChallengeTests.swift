@@ -140,13 +140,13 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
 extension FeedStoreChallengeTests: FailableRetrieveFeedStoreSpecs {
 
     func test_retrieve_deliversFailureOnRetrievalError() {
-        let sut = makeSUT(withExpectingError: .open)
+        let sut = makeSUT(withExpectingError: .read)
 
         assertThatRetrieveDeliversFailureOnRetrievalError(on: sut)
     }
 
     func test_retrieve_hasNoSideEffectsOnFailure() {
-        let sut = makeSUT(withExpectingError: .open)
+        let sut = makeSUT(withExpectingError: .read)
 
         assertThatRetrieveHasNoSideEffectsOnFailure(on: sut)
     }
@@ -156,15 +156,15 @@ extension FeedStoreChallengeTests: FailableRetrieveFeedStoreSpecs {
 extension FeedStoreChallengeTests: FailableInsertFeedStoreSpecs {
 
     func test_insert_deliversErrorOnInsertionError() {
-        let sut = makeSUT(withExpectingError: .open)
+        let sut = makeSUT(withExpectingError: .insert)
 
         assertThatInsertDeliversErrorOnInsertionError(on: sut)
     }
 
     func test_insert_hasNoSideEffectsOnInsertionError() {
-//        let sut = makeSUT()
-//
-//        assertThatInsertHasNoSideEffectsOnInsertionError(on: sut)
+        let sut = makeSUT(withExpectingError: .insert)
+
+        assertThatInsertHasNoSideEffectsOnInsertionError(on: sut)
     }
 
 }
