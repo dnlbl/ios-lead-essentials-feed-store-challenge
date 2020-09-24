@@ -9,12 +9,12 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
     
     override func setUp() {
         super.setUp()
-        try? FileManager.default.removeItem(atPath: dbPath)
+        setupEmptyStoreState()
     }
     
     override func tearDown() {
         super.tearDown()
-        try? FileManager.default.removeItem(atPath: dbPath)
+        undoStoreSideEffects()
     }
 	
     //  ***********************
@@ -117,5 +117,17 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
     private var dbPath: String {
         cachesPath.appending("SQLiteFeedStore.db")
     }
-        
+    
+    private func setupEmptyStoreState() {
+        deleteDatabaseFromDisk()
+    }
+
+    private func undoStoreSideEffects() {
+        deleteDatabaseFromDisk()
+    }
+    
+    private func deleteDatabaseFromDisk() {
+        try? FileManager.default.removeItem(atPath: dbPath)
+    }
+    
 }
