@@ -74,13 +74,15 @@ final public class SQLiteFeedStore: FeedStore {
         do {
             var retrieved = [SQLiteFeedImage]()
             for row in try connection.prepare(self.feedTable) {
-                retrieved.append(SQLiteFeedImage(from: row))
+                if let sqliteFeedImage = SQLiteFeedImage(from: row) {
+                    retrieved.append(sqliteFeedImage)
+                }
             }
             
             guard !retrieved.isEmpty else { return .empty }
            
             let localFeed = retrieved.map { $0.toLocal }
-            let timestamp = Date(timeIntervalSince1970: retrieved.timestamp)
+            let timestamp = retrieved.timestamp
             return .found(feed: localFeed, timestamp: timestamp)
         } catch {
             return .failure(error)
@@ -88,8 +90,8 @@ final public class SQLiteFeedStore: FeedStore {
     }
 
     private func performInsert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        let sqliteFeed = feed.map {
-            SQLiteFeedImage(fromLocal: $0, timestamp: timestamp.timeIntervalSince1970)
+        let sqliteFeed = feed.compactMap {
+            SQLiteFeedImage(fromLocal: $0, timestamp: timestamp)
         }
         
         do {
@@ -109,9 +111,9 @@ final public class SQLiteFeedStore: FeedStore {
 //MARK: - Helpers
 private extension Array where Element == SQLiteFeedImage {
     
-    var timestamp: TimeInterval {
-        guard !isEmpty else { return 0 }
-        return sorted(by: { $0.timestamp.value < $1.timestamp.value })[0].timestamp.value
+    var timestamp: Date {
+        guard !isEmpty else { return Date() }
+        return self[0].timestamp
     }
     
 }

@@ -20,33 +20,41 @@ internal struct SQLiteFeedImage {
     internal let description: SQLiteColumnWrap<String?>
     internal let location: SQLiteColumnWrap<String?>
     internal let url: SQLiteColumnWrap<String>
-    internal let timestamp: SQLiteColumnWrap<TimeInterval>
-    
-    internal init(from row: Row) {
+    internal let timestampRawData: SQLiteColumnWrap<Blob>
+    internal let timestamp: Date
+
+    internal init?(from row: Row) {
         let id = row[SQLiteFeedImage.C_ID]
         let description = row[SQLiteFeedImage.C_DESCRIPTION]
         let location = row[SQLiteFeedImage.C_LOCATION]
         let url = row[SQLiteFeedImage.C_URL]
-        let timestamp = row[SQLiteFeedImage.C_TIMESTAMP]
+        let timestampRawData = row[SQLiteFeedImage.C_TIMESTAMP]
         
-        self = .init(id: id, description: description, location: location, url: url, timestamp: timestamp)
+        guard let decodedTimestamp = try? SQLiteFeedImageHelper.decode(
+            timestampRawData: timestampRawData)
+        else { return nil }
+
+        self = .init(id: id, description: description, location: location, url: url, timestampRawData: timestampRawData, timestamp: decodedTimestamp)
     }
     
-    internal init(id: String, description: String?, location: String?, url: String, timestamp: TimeInterval) {
+    internal init(id: String, description: String?, location: String?, url: String, timestampRawData: Blob, timestamp: Date) {
         self.id = SQLiteColumnWrap(value: id, column: SQLiteFeedImage.C_ID)
         self.description = SQLiteColumnWrap(value: description, column: SQLiteFeedImage.C_DESCRIPTION)
         self.location = SQLiteColumnWrap(value: location, column: SQLiteFeedImage.C_LOCATION)
         self.url = SQLiteColumnWrap(value: url, column: SQLiteFeedImage.C_URL)
-        self.timestamp = SQLiteColumnWrap(value: timestamp, column: SQLiteFeedImage.C_TIMESTAMP)
+        self.timestampRawData = SQLiteColumnWrap(value: timestampRawData, column: SQLiteFeedImage.C_TIMESTAMP)
+        self.timestamp = timestamp
     }
     
-    internal init(fromLocal local: LocalFeedImage, timestamp: TimeInterval) {
+    internal init?(fromLocal local: LocalFeedImage, timestamp: Date) {
+        guard let encodedTimestamp = try? JSONEncoder().encode(timestamp) else { return nil }
+
         let id = local.id.uuidString
         let description = local.description
         let location = local.location
         let url = local.url.absoluteString
         
-        self = .init(id: id, description: description, location: location, url: url, timestamp: timestamp)
+        self = .init(id: id, description: description, location: location, url: url, timestampRawData: encodedTimestamp.datatypeValue, timestamp: timestamp)
     }
     
     internal var toLocal: LocalFeedImage {
@@ -70,6 +78,6 @@ internal extension SQLiteFeedImage {
     static let C_DESCRIPTION = Expression<String?>("description")
     static let C_LOCATION = Expression<String?>("location")
     static let C_URL = Expression<String>("url")
-    static let C_TIMESTAMP = Expression<TimeInterval>("timestamp")
+    static let C_TIMESTAMP = Expression<Blob>("timestamp")
 
 }
