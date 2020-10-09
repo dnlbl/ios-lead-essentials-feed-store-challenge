@@ -21,7 +21,7 @@ internal struct SQLiteFeedImageHelper {
         )
     }
     
-    internal static var prepareTable: (TableBuilder) -> Void {
+    internal static var createTable: (TableBuilder) -> Void {
         let block: (TableBuilder) -> Void = { table in
             table.column(SQLiteFeedImage.C_ID, primaryKey: true)
             table.column(SQLiteFeedImage.C_DESCRIPTION)

@@ -107,7 +107,7 @@ class FeedStoreChallengeTests: XCTestCase, FeedStoreSpecs {
     private func makeSUT(withExpectingError expectingError: FeedStoreOperationError? = nil) -> FeedStore {
         let connection: SQLite.Connection = SQLiteDatabaseFactory.create(dbPath: dbPath)!
          
-        let feedStore = SQLiteFeedStore(
+        let feedStore = try! SQLiteFeedStore(
             connection: SQLiteConnectionDecorator(decoratee: connection, operationError: expectingError)
         )
         

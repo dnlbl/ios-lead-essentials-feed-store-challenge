@@ -25,9 +25,13 @@ internal class SQLiteConnectionDecorator: SQLiteConnectionProtocol {
         self.decoratee = decoratee
         self.operationError = operationError
     }
-
+    
+    func scalar<V>(_ query: Select<V>) throws -> V where V : Value {
+        try decoratee.scalar(query)
+    }
+    
     func run(_ statement: String, _ bindings: Binding?...) throws -> Statement {
-        return try decoratee.run(statement, bindings)
+        try decoratee.run(statement, bindings)
     }
     
     func run(_ query: Delete) throws -> Int {

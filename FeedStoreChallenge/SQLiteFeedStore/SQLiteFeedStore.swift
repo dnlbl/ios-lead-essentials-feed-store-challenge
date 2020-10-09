@@ -13,6 +13,7 @@ public protocol SQLiteConnectionProtocol {
     @discardableResult func run(_ statement: String, _ bindings: Binding?...) throws -> Statement
     @discardableResult func run(_ query: Delete) throws -> Int
     @discardableResult func run(_ query: Insert) throws -> Int64
+    @discardableResult func scalar<V : Value>(_ query: Select<V>) throws -> V
     func prepare(_ query: QueryType) throws -> AnySequence<Row>
 }
 
@@ -24,19 +25,27 @@ final public class SQLiteFeedStore: FeedStore {
     private let feedTable: Table
     private let workingQueue: DispatchQueue
     
-    public init(connection: SQLiteConnectionProtocol) {
+    public init(connection: SQLiteConnectionProtocol) throws {
         self.connection = connection
         self.feedTable = Table("feed")
         self.workingQueue = DispatchQueue(
             label: "SQLiteFeedStore",
             qos: .utility, attributes: .concurrent)
-        prepareTables()
+        try createTableIfNeeded()
     }
     
-    private func prepareTables() {
-        _ = try? connection.run(feedTable.create(block: SQLiteFeedImageHelper.prepareTable))
+    private func createTableIfNeeded() throws {
+        do {
+            _ = try connection.scalar(feedTable.exists)
+        } catch {
+            do {
+                _ = try connection.run(feedTable.create(block: SQLiteFeedImageHelper.createTable))
+            } catch {
+                throw error
+            }
+        }
     }
-
+    
     public func retrieve(completion: @escaping RetrievalCompletion) {
         workingQueue.async { [weak self] in
             guard let self = self else { return }
